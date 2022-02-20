@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "V5BOT 15 second codes",
+    "project_name": "Right_side_red",
     "target": "v5",
     "templates": {
       "kernel": {
@@ -302,6 +302,8 @@
         "version": "4.2.0"
       }
     },
-    "upload_options": {}
+    "upload_options": {
+      "slot": 2
+    }
   }
 }
