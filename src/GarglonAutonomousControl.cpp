@@ -61,7 +61,7 @@ AUTONOMOUS PROGRAMS
 
 ***********************************************************************************************/
 
-void right_side_red()
+void right_side_red() // slot 2
 {
 	sys_initial_robot_heading = 90;
 	double startingtime = pros::millis();
@@ -261,13 +261,59 @@ void right_side_blue()
 	waitForTouch();
 }
 
-void right_side_red_variant2()
+void right_side_red_variant2() // slot 3, uploaded as right_side_red_2
 {
 	sys_initial_robot_heading = 90;
 	double startingtime = pros::millis();
 	vision_object_s_t closest_goal;
 
 	hookAction_1 = {0, true, 1};
+	goStraightCmPID_lib(120, 125, 127, MOVE_FORWARD, 2, 0, 1, 10, 0, 0, 1000, 1, hardwareParameter);
+	armAction_1 = {125, 0, 30, 1};
+	goStraightCm_Front_Vision(40, 125, 90, DETECT_YELLOW_GOAL_SIG, front_vision, 0.5, 0, 1, 0.3, 0, 10, 0.4, 0, 0, 800, 1, hardwareParameter);
+	double angle = get_robot_heading_lib(hardwareParameter);
+	goStraightCmPID_lib(20, angle, 70, MOVE_FORWARD, 2, 0, 1, 0.5, 0, 0, 500, 1, hardwareParameter);
+	clawAction_1 = {0, true, 1};
+	pros::lcd::print(0, "time at grab: %f", pros::millis() - startingtime);
+	armAction_1 = {125, 0, -100, 1};
+	goStraightCmPID_lib(70, 140, 127, MOVE_BACKWARD, 2, 0, 1, 0.5, 0, 0, 1500, 1, hardwareParameter);
+
+	hookAction_1 = {0, false, 1};
+	turnDegreesPID_lib(180, ON_SPOT_TURN, 127, COUNTER_CLOCKWISE, 6, 0, 0, 1000, 2, hardwareParameter);
+	goStraightCm_Back_Vision(70, 180, 100, DETECT_RED_GOAL_SIG, back_vision, 0.5, 0, 1, 0.5, 0, 5, 1, 0, 1, 1000, 1, hardwareParameter);
+	hookAction_1 = {0, true, 1};
+	goStraightCmPID_lib(40, 250, 127, MOVE_FORWARD, 2, 0, 1, 0.5, 0, 0, 1500, 1, hardwareParameter);
+	angle = get_robot_heading_lib(hardwareParameter);
+	clawAction_1 = {100, false, 1};
+	goStraightCmPID_lib(20, angle, 127, MOVE_FORWARD, 2, 0, 1, 0.5, 0, 0, 700, 1, hardwareParameter);
+	goStraightCmPID_lib(6, angle, 127, MOVE_BACKWARD, 2, 0, 1, 0.5, 0, 0, 700, 1, hardwareParameter);
+	armAction_1 = {125, 0, -200, 1};
+	turnDegreesPID_lib(90, ON_SPOT_TURN, 127, CLOCKWISE, 6, 0, 0, 1000, 2, hardwareParameter);
+	goStraightCmPID_lib(30, 90, 127, MOVE_FORWARD, 2, 0, 1, 0.5, 0, 0, 700, 1, hardwareParameter);
+
+	closest_goal = front_vision.get_by_sig(0, DETECT_YELLOW_GOAL_SIG);
+
+	std::cout << "Yellow width: " << closest_goal.width << std::endl;
+
+	if (closest_goal.width >= 70)
+	{
+		armAction_1 = {125, 0, 80, 1};
+		goStraightCm_Front_Vision(20, 90, 90, DETECT_YELLOW_GOAL_SIG, front_vision, 0.5, 0, 1, 0.3, 0, 10, 0.4, 0, 0, 800, 1, hardwareParameter);
+		angle = get_robot_heading_lib(hardwareParameter);
+		goStraightCmPID_lib(35, angle, 70, MOVE_FORWARD, 2, 0, 1, 0.5, 0, 0, 1200, 1, hardwareParameter);
+		clawAction_1 = {100, true, 1};
+		delay(100);
+		armAction_1 = {125, 200, -400, 1};
+		goStraightCmPID_lib(45, 90, 127, MOVE_BACKWARD, 2, 0, 1, 0.5, 0, 0, 1500, 1, hardwareParameter);
+		turnDegreesPID_lib(180, ON_SPOT_TURN, 127, COUNTER_CLOCKWISE, 6, 0, 0, 1000, 2, hardwareParameter);
+		goStraightCmPID_lib(50, 180, 127, MOVE_FORWARD, 2, 0, 1, 0.5, 0, 0, 800, 1, hardwareParameter);
+		intakeAction_1 = {127, 0, 0, 127, 1};
+		goStraightCmPID_lib(100, 180, 70, MOVE_FORWARD, 2, 0, 1, 0.5, 0, 0, 800, 1, hardwareParameter);
+		delay(250);
+		goStraightCmPID_lib(100, 180, 127, MOVE_BACKWARD, 2, 0, 1, 0.5, 0, 0, 800, 1, hardwareParameter);
+	}
+
+	std::cout << "End time: " << pros::millis() - startingtime << std::endl;
 }
 
 void left_side_red()
@@ -1107,8 +1153,8 @@ void autonomous()
 	CHOOSE RUN HERE
 	***********************************************/
 
-	right_side_red();
-	// right_side_red_variant2();
+	// right_side_red();
+	right_side_red_variant2();
 	// right_side_blue();
 	// left_side_red();
 	// left_side_blue();
