@@ -1133,7 +1133,7 @@ void left_side_red()
 	hookAction_1 = {0, false, 1};
 	std::cout << "time at grab: " << pros::millis() - startingtime << std::endl;
 	delay(100);
-	armAction_1 = { 127, 0, 10, 1 };
+	armAction_1 = {127, 0, 10, 1};
 	goStraightCmPID_lib(100, 110, 127, MOVE_BACKWARD, 2, 0, 2, 1, 0, 5, 15000, 2, hardwareParameter);
 	std::cout << "time after: " << pros::millis() - startingtime;
 
