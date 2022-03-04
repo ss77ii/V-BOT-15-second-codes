@@ -139,11 +139,11 @@ void arm_moving_holding_fn(void *param)
 }
 
 double get_distance_back_vision(Vision vision_sensor,
-						 int goal_color_signature,
-						 long samplingNumber,
-						 long sensingTimeInterval_Millis,
-						 int min_width,
-						 long timeoutMillis)
+								int goal_color_signature,
+								long samplingNumber,
+								long sensingTimeInterval_Millis,
+								int min_width,
+								long timeoutMillis)
 {
 	double distance = 0;
 	double width1;
@@ -1296,16 +1296,18 @@ void right_side_red() // slot 2
 
 		if (closest_goal.width >= 120)
 		{
-			armAction_1 = {125, 0, 0, 1};
+			armAction_1 = {127, 0, 0, 1};
+			delay(200);
 			goStraightCm_Front_Vision(20, 140, 100, DETECT_YELLOW_GOAL_SIG, front_vision, 0.5, 0, 1, 0.3, 0, 10, 0.4, 0, 0, 1000, 1, hardwareParameter);
 			double angle = get_robot_heading_lib(hardwareParameter);
-			goStraightCmPID_lib(20, angle, 80, MOVE_FORWARD, 1, 0, 1, 10, 0, 2, 1500, 1, hardwareParameter);
+			goStraightCmPID_lib(25, angle, 80, MOVE_FORWARD, 1, 0, 1, 10, 0, 2, 1500, 1, hardwareParameter);
 			clawAction_1 = {0, true, 1};
-			goStraightCmPID_lib(40, 140, 100, MOVE_BACKWARD, 1, 0, 1, 10, 0, 2, 1500, 1, hardwareParameter);
+			goStraightCmPID_lib(45, 140, 127, MOVE_BACKWARD, 1, 0, 1, 10, 0, 2, 1500, 1, hardwareParameter);
 			armAction_1 = {125, 0, 300, 1};
 			turnDegreesPID_lib(180, ON_SPOT_TURN, 127, COUNTER_CLOCKWISE, 1.6, 0, -1, 1200, 1, hardwareParameter);
-			goStraightCmPID_lib(100, 180, 70, MOVE_FORWARD, 1, 0, 1, 10, 0, 2, 1500, 1, hardwareParameter);
-			goStraightCmPID_lib(120, 180, 127, MOVE_BACKWARD, 1, 0, 1, 10, 0, 2, 1500, 1, hardwareParameter);
+			goStraightCmPID_lib(120, 180, 90, MOVE_FORWARD, 1, 0, 1, 10, 0, 2, 1500, 1, hardwareParameter);
+			hookAction_1 = {500, false, 1};
+			goStraightCmPID_lib(120, 140, 127, MOVE_BACKWARD, 1, 0, 1, 10, 0, 2, 1500, 1, hardwareParameter);
 		}
 		else
 		{
@@ -1320,17 +1322,18 @@ void right_side_red() // slot 2
 
 			if (closest_goal.width >= 90)
 			{
-				armAction_1 = {125, 0, 0, 1};
+				armAction_1 = {127, 0, 0, 1};
+				delay(200);
 				goStraightCm_Front_Vision(40, 145, 100, DETECT_YELLOW_GOAL_SIG, front_vision, 0.5, 0, 1, 0.3, 0, 10, 0.4, 0, 0, 1000, 1, hardwareParameter);
 				double angle = get_robot_heading_lib(hardwareParameter);
 				goStraightCmPID_lib(20, angle, 90, MOVE_FORWARD, 1, 0, 1, 10, 0, 2, 1500, 1, hardwareParameter);
 				clawAction_1 = {0, true, 1};
 				armAction_1 = {125, 0, 200, 1};
-				goStraightCmPID_lib(170, 170, 127, MOVE_BACKWARD, 1, 0, 0, 100, 0, 0, 5000, 1, hardwareParameter);
+				goStraightCmPID_lib(170, 140, 127, MOVE_BACKWARD, 1, 0, 0, 100, 0, 0, 5000, 1, hardwareParameter);
 			}
 			else
 			{
-				goStraightCmPID_lib(170, 175, 127, MOVE_BACKWARD, 1, 0, 0, 100, 0, 0, 5000, 1, hardwareParameter);
+				goStraightCmPID_lib(170, 140, 127, MOVE_BACKWARD, 1, 0, 0, 100, 0, 0, 5000, 1, hardwareParameter);
 			}
 
 			std::cout << pros::millis() - startingtime << std::endl;
@@ -1351,6 +1354,7 @@ void right_side_red() // slot 2
 		goStraightCmPID_lib(25, 225, 100, MOVE_FORWARD, 2, 0, 1, 0.5, 0, 0, 1500, 1, hardwareParameter);
 	}
 
+	std::cout << pros::millis() - startingtime << std::endl;
 	waitForTouch();
 }
 
@@ -1815,7 +1819,7 @@ void autonomous()
 	CHOOSE RUN HERE
 	***********************************************/
 
-	// auton_60s_skills_bridge_version(); // no slot
+	auton_60s_skills_bridge_version(); // no slot
 	// auton_60s_skills_fast_version(); // no slot
 	// auton_60s_skills(); // no slot
 	// right_side_red(); // slot 1
@@ -1825,7 +1829,7 @@ void autonomous()
 	// right_side_blue(); // slot 5
 	// right_side_blue_variant2(); // slot 6
 	// left_side_blue(); // slot 7
-	Blue_Double_WP(); // slot 8
+	// Blue_Double_WP(); // slot 8
 
 	waitForTouch();
 }

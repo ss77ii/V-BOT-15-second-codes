@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "Blue_Double_WP",
+    "project_name": "auton_60s_skills_bridge_version",
     "target": "v5",
     "templates": {
       "kernel": {
@@ -306,7 +306,7 @@
       "compress_bin": true,
       "description": "Left side program for red",
       "remote_name": "left_side_red",
-      "slot": 8
+      "slot": 1
     }
   }
 }
