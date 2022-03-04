@@ -2,8 +2,8 @@
 #include "Garglonmath_lib.hpp"
 
 /****************************************************************************************************************
-* 2022 Game field coodinate system setting:
-*****************************************************************************************************************/
+ * 2022 Game field coodinate system setting:
+ *****************************************************************************************************************/
 
 using namespace pros;
 
@@ -19,7 +19,6 @@ using namespace pros;
 // coordinates of centre of robot
 #define ROBOT_INITIAL_X 73.5
 #define ROBOT_INITIAL_Y 28.5
-
 
 #define ROBOT_INITIAL_HEADING 90
 
@@ -84,24 +83,23 @@ using namespace pros;
 #define ARM_NOT_HOLDING_POSITION 2
 
 /********************************************************
-* Fly Wheel related definitions
-*********************************************************/
- #define CMD_CLAW_STOP_ACTION 0
-
+ * Fly Wheel related definitions
+ *********************************************************/
+#define CMD_CLAW_STOP_ACTION 0
 
 /*********************************************************
-* HOOK related definitions
-*********************************************************/
+ * HOOK related definitions
+ *********************************************************/
 #define CMD_HOOK_STOP_ACTION 10
 
-//hook state definitions
+// hook state definitions
 #define HOOK_CATCH 195
 #define HOOK_PRE 120
 #define HOOK_RELEASE 0
 
 /*********************************************************
-* ARM related definitions
-*********************************************************/
+ * ARM related definitions
+ *********************************************************/
 
 #define PRESS_BRIDGE 380
 #define RELEASE_BRIDGE 740
@@ -109,8 +107,8 @@ using namespace pros;
 #define CARRY_GOAL 250
 
 /*********************************************************
-* Intake related definitions
-*********************************************************/
+ * Intake related definitions
+ *********************************************************/
 #define CMD_INTAKE_STOP_ACTION 20
 #define CMD_INTAKE_ONE_ACTION 21
 #define CMD_INTAKE_TWO_ACTIONS 22
@@ -140,7 +138,7 @@ typedef struct
     float holding_angle_lib;
 } HeadingStruct;
 
-//parallel movements structures
+// parallel movements structures
 
 typedef struct
 {
@@ -195,18 +193,18 @@ extern pros::ADIEncoder Y_encoder;
 
 extern pros::Controller master;
 
-//extern bool door_status;
+// extern bool door_status;
 
 // This variable defines the drifting angle during the period
 // after Inertial sensor reset in Initialization() and before the starting of auton.
 extern double sys_initial_to_auton_drifting;
 extern double sys_initial_robot_heading;
-extern double motion_initial_angle;   //used by position tracing system,
-                                      //value changed in motion function.
+extern double motion_initial_angle; // used by position tracing system,
+                                    // value changed in motion function.
 
 extern Hardware hardwareParameter;
 extern Point sys_coordinates;
-//extern Point sys_encoderPosition;
+// extern Point sys_encoderPosition;
 extern bool coordinateAccessAllowed;
 
 extern long flyWheelSet;
@@ -236,7 +234,7 @@ extern int cmd_arm_run;
 extern bool checkpointBreak;
 
 extern int arm_action_lib;
-//extern double arm_hold_target_angle_lib;
+// extern double arm_hold_target_angle_lib;
 extern double arm_move_target_angle_lib;
 extern int arm_move_speed_lib;
 
@@ -245,7 +243,7 @@ extern bool hookBreak;
 extern bool intakeBreak;
 extern bool armBreak;
 
-//auton tasks for multitasking
+// auton tasks for multitasking
 extern void hook_set_fn(void *param);
 extern void claw_set_fn(void *param);
 extern void intake_set_fn(void *param);
@@ -261,15 +259,11 @@ extern pros::Task hook_set;
 extern pros::Task claw_set;
 extern pros::Task arm_set;
 
-
 extern pros::Vision front_vision;
 extern pros::Vision back_vision;
 extern pros::vision_object_s_t closest_red_goal;
 extern pros::vision_object_s_t closest_blue_goal;
 extern pros::vision_object_s_t closest_yellow_goal;
-
-
-
 
 void waitForTouch();
 
@@ -285,12 +279,9 @@ void twoWheelTurnDegreesPID(double targetHeadingLib, double turnType, double sma
 double get_robot_heading_radians_lib(Hardware robot);
 double get_robot_heading_lib(Hardware robot);
 
-
 void update_coordinate(Point p);
 void update_Coodinate(int updateType, double pos);
 void update_coordinate(int updateType, double xPos, double yPos);
-
-
 
 Point get_coordinate();
 
@@ -299,28 +290,26 @@ void odometry_fn(void *param);
 void infoPrint_fn(void *param);
 
 void goStraightCm_Front_Vision(double cmDistance, double robotInertialHeadingLib, int maxSpeed,
-                         int goal_color_signature, Vision vision_sensor,
-                         double headingKP, double headingKI, double headingKD,
-                         double distanceKP, double distanceKI, double distanceKD,
-                         double visionKP, double visionKI, double visionKD,
-                         long timeoutMili, int exitConditionExpectedPasses, Hardware robot);
+                               int goal_color_signature, Vision vision_sensor,
+                               double headingKP, double headingKI, double headingKD,
+                               double distanceKP, double distanceKI, double distanceKD,
+                               double visionKP, double visionKI, double visionKD,
+                               long timeoutMili, int exitConditionExpectedPasses, Hardware robot);
 
 void goStraightCm_Back_Vision(double cmDistance, double robotInertialHeadingLib, int maxSpeed,
-                         int goal_color_signature, Vision vision_sensor,
-                         double headingKP, double headingKI, double headingKD,
-                         double distanceKP, double distanceKI, double distanceKD,
-                         double visionKP, double visionKI, double visionKD,
-                         long timeoutMili, int exitConditionExpectedPasses, Hardware robot);
+                              int goal_color_signature, Vision vision_sensor,
+                              double headingKP, double headingKI, double headingKD,
+                              double distanceKP, double distanceKI, double distanceKD,
+                              double visionKP, double visionKI, double visionKD,
+                              long timeoutMili, int exitConditionExpectedPasses, Hardware robot);
 
 void search_Goal_Back_Vision(int maxSpeed, int searchDirection, double maxSearchintAngle,
-                      double goal_min_width, int goal_color_signature, pros::Vision vision_sensor,
-                      double visionKP, double visionKI, double visionKD,
-                      double inertialKP, double inertialKI, double inertialKD,
-                      long timeoutMili, int exitConditionExpectedPasses, Hardware robot);
+                             double goal_min_width, int goal_color_signature, pros::Vision vision_sensor,
+                             double visionKP, double visionKI, double visionKD,
+                             double inertialKP, double inertialKI, double inertialKD,
+                             long timeoutMili, int exitConditionExpectedPasses, Hardware robot);
 
 void display_vision_error(int line, std::string msg);
-
-
 
 void new_goStraightCm_Front_Vision(double cmDistance, double robotInertialHeadingLib, int maxSpeed,
                                    int goal_color_signature, Vision vision_sensor,
@@ -332,23 +321,27 @@ void new_goStraightCm_Front_Vision(double cmDistance, double robotInertialHeadin
 bool combine_two_goals(pros::vision_object_s_t *first_goal, pros::vision_object_s_t *second_goal);
 
 double get_distance_back_vision(Vision vision_sensor, int goal_color_signature,
-	                              long samplingNumber, long sensingTimeInterval_Millis,
-															  int min_width, long timeoutMillis);
+                                long samplingNumber, long sensingTimeInterval_Millis,
+                                int min_width, long timeoutMillis);
 
+double get_distance_front_vision(Vision vision_sensor, int goal_color_signature,
+                                 long samplingNumber, long sensingTimeInterval_Millis,
+                                 int min_width, long timeoutMillis);
 
-
+void balance_bridge_PID_lib(int maxPower, double target_pitch, double balance_KP, double balance_KI, double balance_KD,
+                            long timeoutMili, int exitConditionExpectedPasses, Hardware robot);
 typedef struct
 {
-  double targetHeadingLib;
-  double turnType;
-  long maxPower;
-  int turnDirection;
-  double headingKP;
-  double headingKI;
-  double headingKD;
-  long timeoutMili;
-  int exitConditionExpectedPasses;
+    double targetHeadingLib;
+    double turnType;
+    long maxPower;
+    int turnDirection;
+    double headingKP;
+    double headingKI;
+    double headingKD;
+    long timeoutMili;
+    int exitConditionExpectedPasses;
 } turnDegreesPID_cmd_struct;
 
 extern turnDegreesPID_cmd_struct turnDegreesPID_Parameter;
-void background_execution_turnDegreesPID_lib(void* param);
+void background_execution_turnDegreesPID_lib(void *param);

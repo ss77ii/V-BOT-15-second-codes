@@ -1573,3 +1573,96 @@ void new_goStraightCm_Front_Vision(double cmDistance, double robotInertialHeadin
 		pros::delay(delayTime - substitutedTime); // the targeted delay time needs to be consistent every loop by finding how long the execution within the loop took and then subtracting that from the preferred delay time
 	}
 }
+
+void balance_bridge_PID_lib(int maxPower, double target_pitch, double balance_KP, double balance_KI, double balance_KD,
+							long timeoutMili, int exitConditionExpectedPasses, Hardware robot)
+{
+
+	long startingTime = pros::millis();
+	long endTime = startingTime + timeoutMili; // timeout calculation
+	long enterTime;
+	long currentTime;
+	long previousTime = 0;
+	long substitutedTime;
+	long delayTime = 10; // standardize time per cycle of while loop (so that kD is actually rate and not arbitrary)
+
+	int max_speed = maxPower;
+	int count = 1;
+
+	double startingPitch = robot.inertialSensorLib.get_pitch();
+	double currentPitch = startingPitch;
+	;
+	double previousPitch = startingPitch;
+	;
+	//    double targetPitch = 0;
+	double currentPitchError = target_pitch - startingPitch;
+	double previousPitchError = currentPitchError;
+	double accumulatedPitchError = 0;
+	// lcd::print(1, "start: %f", startingPitch);
+	// waitForTouch();
+
+	double pitchProportionalCorrection = 0;
+	double pitchIntegralCorrection = 0;
+	double pitchDerivativeCorrection = 0;
+	double totalPitchCorrection = 0;
+
+	long exitConditionPasses = 0; // number of times the PID caused the robot to go over the target distance
+	DriveSpeedConfig pitchSpeedConfig;
+
+	while (true)
+	{
+		enterTime = pros::millis();
+		currentPitch = robot.inertialSensorLib.get_pitch();
+		currentPitchError = target_pitch - currentPitch;
+		if (currentPitchError == 0)
+		{
+			exitConditionPasses++;
+		}
+		else if (previousPitchError > 0 && currentPitchError < 0)
+		{ // uses error to tell how close the robot is to the target
+			exitConditionPasses++;
+		}
+		else if (currentPitchError > 0 && previousPitchError < 0)
+		{
+			exitConditionPasses++;
+		}
+
+		if (exitConditionPasses >= exitConditionExpectedPasses)
+		{
+			set_drive_motor_speed_zero(robot);
+			lcd::print(5, "EXIT CONDITION");
+			break;
+		}
+		else if (pros::millis() >= endTime)
+		{
+			set_drive_motor_speed_zero(robot);
+			lcd::print(5, "EXIT TIMER");
+			break;
+		}
+		// HEADING CORRECTION//
+		pitchProportionalCorrection = currentPitchError * balance_KP;
+		accumulatedPitchError = currentPitchError + accumulatedPitchError;
+		pitchIntegralCorrection = accumulatedPitchError * balance_KI;
+		// Derivative
+		pitchDerivativeCorrection = (currentPitch - previousPitch) * balance_KD;
+		// all
+		totalPitchCorrection = pitchProportionalCorrection + pitchIntegralCorrection + pitchDerivativeCorrection;
+
+		totalPitchCorrection = truncateNumber(totalPitchCorrection, max_speed);
+
+		// pros::lcd::print(7, "speed= %f", totalPitchCorrection);
+		// waitForTouch();
+
+		pitchSpeedConfig = assignDriveSpeed(totalPitchCorrection, totalPitchCorrection,
+											totalPitchCorrection, totalPitchCorrection);
+
+		set_drive_motor_speed(pitchSpeedConfig, robot);
+
+		previousPitch = currentPitch;
+		previousPitchError = currentPitchError;
+		previousTime = currentTime;
+
+		substitutedTime = pros::millis() - enterTime;
+		pros::delay(delayTime - substitutedTime); // the targeted delay time needs to be consistent every loop by finding how long the execution within the loop took and then subtracting that from the preferred delay time
+	}
+}
