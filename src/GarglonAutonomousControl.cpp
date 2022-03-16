@@ -1963,10 +1963,10 @@ void autonomous()
 	// auton_60s_skills_bridge_version(); // no slot
 	// auton_60s_skills_fast_version(); // no slot
 	// auton_60s_skills(); // no slot
-	// right_side_red(); // slot 1
+	right_side_red(); // slot 1
 	// right_side_red_2(); // slot 2
 	// right_side_red_3(); // slot 3
-	left_side_red(); // slot 4---
+	// left_side_red(); // slot 4---
 	// Red_Double_WP(); // slot 5---
 	// right_side_blue(); // slot 6
 	// right_side_blue_2(); // slot 7
