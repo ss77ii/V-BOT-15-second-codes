@@ -227,9 +227,31 @@ double get_distance_front_vision(Vision vision_sensor, int goal_color_signature,
 	return distance;
 }
 
-double goStraightCmPID_lib_chase_goal(int colour, int distance)
+double goStraightCmPID_lib_chase_backgoal(int speed, int angle, int distance, int time_out)
 {
+	vision_object_s_t close_goal_1;
+	vision_object_s_t close_goal_2;
+	double width_1;
+	double width_2;
 
+	for (int i = 0; i < 10; i++)
+	{
+		closest_goal_1 = back_vision.get_by_sig(0, DETECT_BLUE_GOAL_SIG);
+		delay(5);
+		closest_goal_1 = back_vision.get_by_sig(0, DETECT_RED_GOAL_SIG);
+		delay(5);
+		width_1 += closest_goal_1.width;
+		width_2 += closest_goal_2.width;
+	}
+
+	if (width_1 > width_2) // BLUE > RED
+	{
+		goStraightCm_Back_Vision(distance, angle, speed, DETECT_BLUE_GOAL_SIG, back_vision, 0.5, 0, 1, 0.5, 0, 5, 0.5, 0, 5, time_out, 1, hardwareParameter);
+	}
+	else // RED > BLUE
+	{
+		goStraightCm_Back_Vision(distance, angle, speed, DETECT_RED_GOAL_SIG, back_vision, 0.5, 0, 1, 0.5, 0, 5, 0.5, 0, 5, time_out, 1, hardwareParameter);
+	}
 }
 
 void auton_60s_skills_bridge_version()
@@ -1922,7 +1944,6 @@ void test()
 		}
 
 		distance = get_distance_front_vision(front_vision, DETECT_BLUE_GOAL_SIG, 10, 10, 60, 120);
-
 
 		pros::lcd::print(2, "witdh = %f", sum / cnt);
 		pros::lcd::print(1, "distance = %f", distance);
