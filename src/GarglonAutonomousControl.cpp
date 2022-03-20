@@ -227,7 +227,7 @@ double get_distance_front_vision(Vision vision_sensor, int goal_color_signature,
 	return distance;
 }
 
-double goStraightCmPID_lib_chase_backgoal(int speed, int angle, int distance, int time_out)
+double goStraightCmPID_lib_chase_backgoal(int distance, int angle, int speed, int time_out)
 {
 	vision_object_s_t close_goal_1;
 	vision_object_s_t close_goal_2;
@@ -1283,6 +1283,63 @@ void auton_60s_skills_fast_version()
 	waitForTouch();
 }
 
+void right_side() // slot 2
+{
+	sys_initial_robot_heading = 90;
+	double startingtime = pros::millis();
+	vision_object_s_t closest_goal;
+
+	clawAction_1 = {950, true, 1};
+	goStraightCmPID_lib(87, 90, 127, MOVE_FORWARD, 2, 0, 0.6, 0.65, 0, 2, 5000, 1, hardwareParameter);
+	delay(50);
+	pros::lcd::print(0, "time at grab: %f", pros::millis() - startingtime);
+	delay(100);
+	armAction_1 = {127, 0, -10, 1};
+	goStraightCmPID_lib(65, 100, 127, MOVE_BACKWARD, 2, 0, 2, 1, 0, 3, 15000, 2, hardwareParameter);
+	pros::lcd::print(1, "time after: %f", pros::millis() - startingtime);
+
+	if (true)
+	{ // drop current goal whether or not you have it. go for middle goal
+		armAction_1 = {127, 0, 50, 1};
+		delay(200);
+		turnDegreesPID_lib(350, ON_SPOT_TURN, 127, CLOCKWISE, 2, 0, 0, 2000, 1, hardwareParameter);
+		delay(100);
+		clawAction_1 = {0, false, 1};
+		goStraightCmPID_lib(10, 350, 80, MOVE_FORWARD, 2, 0, 2, 10, 0, 2, 600, 1, hardwareParameter);
+		goStraightCmPID_lib(5, 350, 80, MOVE_BACKWARD, 2, 0, 2, 10, 0, 2, 600, 1, hardwareParameter);
+		armAction_1 = {127, 0, 200, 1};
+
+		turnDegreesPID_lib(180, ON_SPOT_TURN, 127, COUNTER_CLOCKWISE, 1.6, 0, -1, 1200, 2, hardwareParameter);
+
+		goStraightCmPID_lib_chase_backgoal(90, 180, 100, 1800);
+		armAction_1 = {125, 0, 300, 1};
+		hookAction_1 = {0, true, 1};
+		intakeAction_1 = {127, 300, 10000, 127, 1};
+		delay(100);
+
+		goStraightCmPID_lib(10, 180, 80, MOVE_FORWARD, 2, 0, 2, 10, 0, 2, 600, 1, hardwareParameter);
+		armAction_1 = {127, 0, 0, 1};
+		waitForTouch();
+		goStraightCmPID_lib(100, 135, 80, MOVE_FORWARD, 1, 0, 1, 10, 0, 2, 1500, 1, hardwareParameter);
+
+		delay(200);
+		goStraightCm_Front_Vision(30, 135, 100, DETECT_YELLOW_GOAL_SIG, front_vision, 0.5, 0, 1, 0.3, 0, 10, 0.4, 0, 0, 1000, 1, hardwareParameter);
+		double angle = get_robot_heading_lib(hardwareParameter);
+		goStraightCmPID_lib(25, angle, 80, MOVE_FORWARD, 1, 0, 1, 10, 0, 2, 1500, 1, hardwareParameter);
+		clawAction_1 = {0, true, 1};
+		goStraightCmPID_lib(45, 135, 127, MOVE_BACKWARD, 1, 0, 1, 10, 0, 2, 1500, 1, hardwareParameter);
+		armAction_1 = {125, 0, 300, 1};
+		turnDegreesPID_lib(180, ON_SPOT_TURN, 127, COUNTER_CLOCKWISE, 1.6, 0, -1, 1200, hardwareParameter);
+		goStraightCmPID_lib(120, 180, 90, MOVE_FORWARD, 1, 0, 1, 10, 0, 2, 1500, 1, hardwareParameter);
+		hookAction_1 = {500, false, 1};
+		goStraightCmPID_lib(120, 160, 127, MOVE_BACKWARD, 1, 0, 1, 10, 0, 2, 1500, 1, hardwareParameter);
+	}
+	//	else if ((pros::millis() - startingtime) < 3000 && (pros::millis() - startingtime) <= 6000){ // go for win point or mid depending on qual or final
+
+	std::cout << pros::millis() - startingtime << std::endl;
+	waitForTouch();
+}
+
 void test()
 {
 	vision_object_s_t closest_goal;
@@ -1346,10 +1403,11 @@ void autonomous()
 	CHOOSE RUN HERE
 	***********************************************/
 
-	test(); // no slot
+	// test(); // no slot
 	// auton_60s_skills_bridge_version(); // no slot
 	// auton_60s_skills_fast_version(); // no slot
 	// auton_60s_skills(); // no slot
+	right_side();
 
 	waitForTouch();
 }
