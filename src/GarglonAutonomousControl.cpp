@@ -227,10 +227,10 @@ double get_distance_front_vision(Vision vision_sensor, int goal_color_signature,
 	return distance;
 }
 
-double goStraightCmPID_lib_chase_backgoal(int distance, int angle, int speed, int time_out)
+void goStraightCmPID_lib_chase_backgoal(int distance, int angle, int speed, int time_out)
 {
-	vision_object_s_t close_goal_1;
-	vision_object_s_t close_goal_2;
+	vision_object_s_t closest_goal_1;
+	vision_object_s_t closest_goal_2;
 	double width_1;
 	double width_2;
 
@@ -1329,7 +1329,7 @@ void right_side() // slot 2
 		clawAction_1 = {0, true, 1};
 		goStraightCmPID_lib(45, 135, 127, MOVE_BACKWARD, 1, 0, 1, 10, 0, 2, 1500, 1, hardwareParameter);
 		armAction_1 = {125, 0, 300, 1};
-		turnDegreesPID_lib(180, ON_SPOT_TURN, 127, COUNTER_CLOCKWISE, 1.6, 0, -1, 1200, hardwareParameter);
+		turnDegreesPID_lib(180, ON_SPOT_TURN, 127, COUNTER_CLOCKWISE, 1.6, 0, -1, 1200, 2, hardwareParameter);
 		goStraightCmPID_lib(120, 180, 90, MOVE_FORWARD, 1, 0, 1, 10, 0, 2, 1500, 1, hardwareParameter);
 		hookAction_1 = {500, false, 1};
 		goStraightCmPID_lib(120, 160, 127, MOVE_BACKWARD, 1, 0, 1, 10, 0, 2, 1500, 1, hardwareParameter);
