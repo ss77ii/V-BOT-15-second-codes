@@ -250,6 +250,33 @@ void hook_control_fn(void *param)
  ***********************************************************************************************************/
 void opcontrol()
 {
+	vision_object_s_t closest_goal;
+	double distance;
+	double front_distance;
+	int cnt = 0;
+	double sum = 0;
+	int num = 1;
+
+	while (true)
+	{
+		waitForTouch();
+		for (int i = 0; i < 100; i++)
+		{
+			closest_goal = front_vision.get_by_sig(0, DETECT_BLUE_GOAL_SIG);
+			delay(20);
+			sum += closest_goal.width;
+			cnt++;
+		}
+
+		distance = get_distance_front_vision(front_vision, DETECT_BLUE_GOAL_SIG, 10, 10, 60, 120);
+
+		pros::lcd::print(2, "witdh = %f", sum / cnt);
+		pros::lcd::print(1, "distance = %f", distance);
+		std::cout << num << " width = " << sum / cnt << std::endl;
+		std::cout << num << " distance = " << distance << std::endl;
+		num++;
+	}
+
 	bool run_skills = true;
 
 	// left_front_motor.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);

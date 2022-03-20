@@ -227,6 +227,11 @@ double get_distance_front_vision(Vision vision_sensor, int goal_color_signature,
 	return distance;
 }
 
+double goStraightCmPID_lib_chase_goal(int colour, int distance)
+{
+
+}
+
 void auton_60s_skills_bridge_version()
 {
 	sys_initial_to_auton_drifting = inertial_sensor.get_rotation();
@@ -235,7 +240,8 @@ void auton_60s_skills_bridge_version()
 	long claw_action_delay_time = 75;
 	long start_time = pros::millis();
 	int intake_speed = 110;
-	arm_motor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
+	arm_motor.set_brake_mode(E_MOTOR_BRAKE_BRAKE);
+	armAction_1 = {50, 0, -10, 1};
 	pros::Task arm_holding_task(arm_moving_holding_fn, (void *)"PROS", TASK_PRIORITY_DEFAULT, TASK_STACK_DEPTH_DEFAULT, "arm_holding_task");
 
 	clawAction_1 = {0, false, 1};
@@ -509,7 +515,7 @@ void auton_60s_skills_bridge_version()
 	//		goStraightCmPID_lib(35, 180, 127, MOVE_FORWARD, 1.2, 0, 0, 0.5, 0, 5, 1200, 1, hardwareParameter);
 	//		delay(100);
 	armAction_1 = {127, 200, 20, 1};
-	turnDegreesPID_lib(180, ON_SPOT_TURN, 60, CLOCKWISE, 6, 0, -20, 800, 2, hardwareParameter);
+	turnDegreesPID_lib(184, ON_SPOT_TURN, 60, CLOCKWISE, 6, 0, -20, 800, 2, hardwareParameter);
 
 	//		armAction_1 = {127, 0, 20, 1};
 	delay(200);
@@ -520,9 +526,9 @@ void auton_60s_skills_bridge_version()
 	right_back_motor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 	right_mid_motor.set_brake_mode(E_MOTOR_BRAKE_HOLD);
 
-	goStraightCmPID_lib(85, 180, 127, MOVE_FORWARD, 3, 0, 0, 10, 0, 0, 2000, 1, hardwareParameter);
+	goStraightCmPID_lib(85, 184, 127, MOVE_FORWARD, 3, 0, 0, 10, 0, 0, 2000, 1, hardwareParameter);
 	balance_bridge_PID_lib(127, -15, 15, 0, 0, 5000, 1, hardwareParameter);
-	goStraightCmPID_lib(3.5, 180, 127, MOVE_BACKWARD, 0, 0, 0, 1, 0, 0, 800, 1, hardwareParameter);
+	goStraightCmPID_lib(3.5, 184, 127, MOVE_BACKWARD, 0, 0, 0, 1, 0, 0, 800, 1, hardwareParameter);
 
 	pros::lcd::print(2, "Time=%d", pros::millis() - start_time);
 	waitForTouch();
@@ -1901,29 +1907,29 @@ void test()
 	double distance;
 	double front_distance;
 	int cnt = 0;
+	double sum = 0;
+	int num = 1;
 
 	while (true)
 	{
-		for (int i = 0; i < 10; i++)
+		waitForTouch();
+		for (int i = 0; i < 100; i++)
 		{
-			closest_goal = front_vision.get_by_sig(0, DETECT_YELLOW_GOAL_SIG);
-			delay(10);
-			if (closest_goal.width >= 120)
-				break;
+			closest_goal = front_vision.get_by_sig(0, DETECT_BLUE_GOAL_SIG);
+			delay(20);
+			sum += closest_goal.width;
+			cnt++;
 		}
 
-		pros::lcd::print(2, "witdh = %d", closest_goal.width);
-		waitForTouch();
+		distance = get_distance_front_vision(front_vision, DETECT_BLUE_GOAL_SIG, 10, 10, 60, 120);
+
+
+		pros::lcd::print(2, "witdh = %f", sum / cnt);
+		pros::lcd::print(1, "distance = %f", distance);
+		std::cout << num << " width = " << sum / cnt << std::endl;
+		std::cout << num << " distance = " << distance << std::endl;
+		num++;
 	}
-	// while (true)
-	// {
-	// 	cnt++;
-	// 	front_distance = get_distance_front_vision(front_vision, DETECT_YELLOW_GOAL_SIG, 10, 10, 60, 200);
-	// 	distance = get_distance_back_vision(back_vision, DETECT_RED_GOAL_SIG, 10, 10, 60, 200);
-	// 	pros::lcd::print(1, "f_d: %f", front_distance);
-	// 	pros::lcd::print(0, "distance: %f, %d", distance, cnt);
-	// 	delay(3000);
-	// }
 }
 
 /**************************
@@ -1959,11 +1965,11 @@ void autonomous()
 	CHOOSE RUN HERE
 	***********************************************/
 
-	// test(); // no slot
+	test(); // no slot
 	// auton_60s_skills_bridge_version(); // no slot
 	// auton_60s_skills_fast_version(); // no slot
 	// auton_60s_skills(); // no slot
-	right_side_red(); // slot 1
+	// right_side_red(); // slot 1
 	// right_side_red_2(); // slot 2
 	// right_side_red_3(); // slot 3
 	// left_side_red(); // slot 4---
