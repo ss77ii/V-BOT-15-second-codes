@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "test",
+    "project_name": "right_side",
     "target": "v5",
     "templates": {
       "kernel": {
@@ -312,7 +312,7 @@
       "compress_bin": true,
       "description": "Left side program for red",
       "remote_name": "left_side_red",
-      "slot": 1
+      "slot": 2
     }
   }
 }
