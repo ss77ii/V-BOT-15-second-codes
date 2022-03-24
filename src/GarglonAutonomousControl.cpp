@@ -1283,11 +1283,28 @@ void auton_60s_skills_fast_version()
 	waitForTouch();
 }
 
-void right_side() // slot 2
+void right_side_with_limit() // slot 2
 {
 	sys_initial_robot_heading = 90;
 	double startingtime = pros::millis();
 	vision_object_s_t closest_goal;
+
+	goStraightCmPID_lib_limit_switch(98, 90, 127, MOVE_FORWARD, 1.5, 0, 1.5, 0.8, 0, 0, 1500, 1, hardwareParameter);
+	clawAction_1 = {0, true, 1};
+	goStraightCmPID_lib(80, 90, 127, MOVE_BACKWARD, 1.5, 0, 1.5, 0.8, 0, 0, 15000, 1, hardwareParameter);
+	pros::lcd::print(2, "Time = %f", pros::millis() - startingtime);
+}
+
+void right_side()
+{
+	sys_initial_robot_heading = 90;
+	double startingtime = pros::millis();
+	vision_object_s_t closest_goal;
+
+	clawAction_1 = {950, true, 1};
+	goStraightCmPID_lib(92, 90, 127, MOVE_FORWARD, 2, 0, 0.6, 0.65, 0, 2, 5000, 1, hardwareParameter);
+	goStraightCmPID_lib(80, 90, 127, MOVE_BACKWARD, 1.5, 0, 1.5, 0.8, 0, 0, 15000, 1, hardwareParameter);
+	pros::lcd::print(1, "Time = %f", pros::millis() - startingtime);
 }
 
 void test()
@@ -1357,7 +1374,8 @@ void autonomous()
 	// auton_60s_skills_bridge_version(); // no slot
 	// auton_60s_skills_fast_version(); // no slot
 	// auton_60s_skills(); // no slot
-	right_side();
+	right_side_with_limit(); // 2160, 2130
+	// right_side(); // 2060, 2030
 
 	waitForTouch();
 }
